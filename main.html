@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Information Manager</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "Comic Sans MS", "Segoe UI", Arial;
+    }
+
+    .page {
+        width: 600px;
+        margin: 20px auto;
+        background: #ffffffdd;
+        padding: 20px 40px;
+        border-left: 5px solid red;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        background-image:
+            linear-gradient(to bottom, transparent 23px, #cfe3ff 24px),
+            linear-gradient(to bottom, #cfe3ff 1px, transparent 1px);
+        background-size: 100% 25px;
+    }
+
+    h2 {
+        text-align: center;
+        font-size: 30px;
+        margin-bottom: 20px;
+        color: #2a4d8f;
+    }
+
+    input, button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 12px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: 2px solid #8ca7d8;
+        background: #f5faff;
+    }
+
+    button {
+        background: #ffed90;
+        border: 2px solid #d6c06e;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #ffdf5b;
+    }
+
+    .entry {
+        background: #fffce8;
+        padding: 12px;
+        margin-top: 15px;
+        border-left: 5px solid #6b8bd8;
+        border-radius: 8px;
+        box-shadow: 0 0 5px #bec9ff;
+        font-size: 17px;
+    }
+
+    .entry strong {
+        color: #1b3a7a;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="page">
+    <h2>Student Information Manager</h2>
+
+    <input type="text" id="name" placeholder="Student Name">
+    <input type="number" id="age" placeholder="Age">
+    <input type="text" id="section" placeholder="Section">
+
+    <button onclick="addStudent()">Add Student</button>
+    <button onclick="saveJSON()">Save to File</button>
+    <button onclick="loadJSON()">Load File</button>
+
+    <div id="list"></div>
+</div>
+
+<script>
+let students = [];
+
+// ADD STUDENT
+function addStudent() {
+    let name = document.getElementById("name").value;
+    let age = document.getElementById("age").value;
+    let section = document.getElementById("section").value;
+
+    if (!name || !age || !section) {
+        alert("Please fill all fields!");
+        return;
+    }
+
+    students.push({ name, age, section });
+    display();
+
+    document.getElementById("name").value = "";
+    document.getElementById("age").value = "";
+    document.getElementById("section").value = "";
+}
+
+// DISPLAY STUDENTS AS NOTEBOOK ENTRIES
+function display() {
+    let list = document.getElementById("list");
+    list.innerHTML = "";
+
+    students.forEach(st => {
+        list.innerHTML += `
+            <div class="entry">
+                <strong>Name:</strong> ${st.name} <br>
+                <strong>Age:</strong> ${st.age} <br>
+                <strong>Section:</strong> ${st.section}
+            </div>
+        `;
+    });
+}
+
+// SAVE TO FILE
+function saveJSON() {
+    let json = JSON.stringify(students, null, 2);
+    let blob = new Blob([json], { type: "application/json" });
+    let url = URL.createObjectURL(blob);
+
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "students_notebook.json";
+    a.click();
+}
+
+// LOAD FROM FILE
+function loadJSON() {
+    let input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+
+    input.onchange = function(event) {
+        let file = event.target.files[0];
+        let reader = new FileReader();
+
+        reader.onload = function(e) {
+            students = JSON.parse(e.target.result);
+            display();
+        };
+
+        reader.readAsText(file);
+    };
+
+    input.click();
+}
+</script>
+
+</body>
+</html>
+
