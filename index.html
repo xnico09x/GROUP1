@@ -72,6 +72,11 @@
     button:hover {
         background: #ffe066;
     }
+       .divider {
+        border: none;
+        border-top: 3px dashed #6b8bd8;
+        margin: 30px 0 15px 0;
+    }
 
     .student-record {
         background: #fffce8;
@@ -122,7 +127,7 @@
     <!-- Records Section -->
     <div id="records-section">
         <h3>Student Records</h3>
-     <br>
+         <hr class="divider">
         <div id="records-container"></div>
     </div>
 </div>
@@ -208,5 +213,3 @@ function loadFromFile(event) {
 
 </body>
 </html>
-
-
