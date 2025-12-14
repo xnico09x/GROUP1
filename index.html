@@ -1,0 +1,210 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Student Information Manager</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "Comic Sans MS", Arial;
+        background: #eaeaea;
+    }
+
+    .notebook {
+        max-width: 750px;
+        margin: 30px auto;
+        background: white;
+        padding: 30px 40px;
+        border-left: 6px solid red;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        background-image:
+            linear-gradient(to bottom, transparent 24px, #cfe3ff 25px),
+            linear-gradient(to bottom, #cfe3ff 1px, transparent 1px);
+        background-size: 100% 26px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #1f3c88;
+        text-decoration: underline;
+    }
+
+    h3 {
+        margin-top: 30px;
+        color: #1f3c88;
+    }
+
+    .form-group {
+        margin: 18px 0;
+    }
+
+    label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    input {
+        width: 100%;
+        max-width: 400px;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: 2px solid #8ca7d8;
+        background: #f5faff;
+    }
+
+    button {
+        padding: 10px 16px;
+        margin: 10px 5px 0 0;
+        font-size: 15px;
+        border-radius: 8px;
+        border: 2px solid #d6c06e;
+        background: #ffed90;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background: #ffe066;
+    }
+
+    .student-record {
+        background: #fffce8;
+        padding: 14px;
+        margin: 12px 0;
+        border-left: 5px solid #6b8bd8;
+        border-radius: 8px;
+        box-shadow: 0 0 5px #bec9ff;
+        font-size: 16px;
+    }
+
+    .student-record strong {
+        color: #1b3a7a;
+    }
+    #fileInput {
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="notebook">
+    <h1>Student Information Manager</h1>
+
+    <!-- Student Input Form -->
+    <div class="form-group">
+        <label>Student Name:</label>
+        <input type="text" id="name" placeholder="Enter full name">
+    </div>
+
+    <div class="form-group">
+        <label>Student Number:</label>
+        <input type="text" id="studentNumber" placeholder="Enter student number">
+    </div>
+
+    <div class="form-group">
+        <label>Course:</label>
+        <input type="text" id="course" placeholder="Enter course name">
+    </div>
+
+    <!-- Action Buttons -->
+    <button onclick="addStudent()">Add Student</button>
+    <button onclick="displayStudents()">Display Records</button>
+    <button onclick="saveToFile()">Save to File</button>
+
+    <input type="file" id="fileInput" accept=".txt" onchange="loadFromFile(event)">
+    <button onclick="document.getElementById('fileInput').click()">Load from File</button>
+    <!-- Records Section -->
+    <div id="records-section">
+        <h3>Student Records</h3>
+        <div id="records-container"></div>
+    </div>
+</div>
+
+<script>
+let students = [];
+
+// ADD STUDENT
+function addStudent() {
+    let name = document.getElementById("name").value;
+    let studentNumber = document.getElementById("studentNumber").value;
+    let course = document.getElementById("course").value;
+
+    if (!name || !studentNumber || !course) {
+        alert("Please fill all fields!");
+        return;
+    }
+
+    students.push({ name, studentNumber, course });
+    displayStudents();
+
+    document.getElementById("name").value = "";
+    document.getElementById("studentNumber").value = "";
+    document.getElementById("course").value = "";
+}
+
+// DISPLAY STUDENTS
+function displayStudents() {
+    let container = document.getElementById("records-container");
+    container.innerHTML = "";
+
+    students.forEach(s => {
+        container.innerHTML += `
+            <div class="student-record">
+                <strong>Name:</strong> ${s.name}<br>
+                <strong>Student Number:</strong> ${s.studentNumber}<br>
+                <strong>Course:</strong> ${s.course}
+            </div>
+        `;
+    });
+}
+
+// SAVE TO FILE
+function saveToFile() {
+    let text = "";
+    students.forEach(s => {
+        text += `${s.name},${s.studentNumber},${s.course}\n`;
+    });
+
+    let blob = new Blob([text], { type: "text/plain" });
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "students.txt";
+    a.click();
+}
+
+// LOAD FROM FILE
+function loadFromFile(event) {
+    let file = event.target.files[0];
+    let reader = new FileReader();
+
+    reader.onload = function(e) {
+        let lines = e.target.result.split("\n");
+        students = [];
+
+        lines.forEach(line => {
+            let data = line.split(",");
+            if (data.length === 3) {
+                students.push({
+                    name: data[0],
+                    studentNumber: data[1],
+                    course: data[2]
+                });
+            }
+        });
+
+        displayStudents();
+    };
+
+    reader.readAsText(file);
+}
+</script>
+
+</body>
+</html>
