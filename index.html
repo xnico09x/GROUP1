@@ -15,7 +15,7 @@
     }
 
     .notebook {
-        max-width: 750px;
+        max-width: 550px;
         margin: 30px auto;
         background: white;
         padding: 30px 40px;
@@ -72,6 +72,29 @@
     button:hover {
         background: #ffe066;
     }
+    .button-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.button-group button {
+    flex: 1;
+    min-width: 150px;
+}
+
+/* Mobile Fix */
+@media (max-width: 600px) {
+    .button-group {
+        flex-direction: column;
+    }
+
+    .button-group button {
+        width: 100%;
+    }
+}
+
        .divider {
         border: none;
         border-top: 3px dashed #6b8bd8;
@@ -119,11 +142,14 @@
     </div>
 
     <!-- Action Buttons -->
+<div class="button-group">
     <button onclick="addStudent()">Add Student</button>
-     <button onclick="saveToFile()">Save to File</button>
-
-    <input type="file" id="fileInput" accept=".txt" onchange="loadFromFile(event)">
+    <button onclick="saveToFile()">Save to File</button>
     <button onclick="document.getElementById('fileInput').click()">Load from File</button>
+</div>
+
+<input type="file" id="fileInput" accept=".txt" onchange="loadFromFile(event)">
+
     <!-- Records Section -->
     <div id="records-section">
         <h3>Student Records</h3>
